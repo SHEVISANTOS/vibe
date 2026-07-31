@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tekra.dev — Happy Girlfriend's Day</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&display=swap');
+
+  :root{
+    --bg: #0b0e14;
+    --panel: #12161f;
+    --chrome: #1a1f2b;
+    --line: rgba(255,255,255,0.08);
+    --text: #d8e0ef;
+    --muted: #5c6b8a;
+    --comment: #6a9955;
+    --key: #ff8fb3;
+    --str: #ffd166;
+    --func: #7fd8ff;
+    --rose: #ff6b9d;
+    --lavender: #c9a8ff;
+    --paper: #fbf2e9;
+    --ink: #3a2b2b;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; }
+
+  ::selection { background: var(--rose); color: var(--bg); }
+
+  :focus-visible {
+    outline: 2px solid var(--rose);
+    outline-offset: 3px;
+  }
+
+  .glow-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(255,107,157,0.10), transparent 40%),
+      radial-gradient(circle at 88% 18%, rgba(201,168,255,0.08), transparent 42%),
+      radial-gradient(circle at 50% 95%, rgba(255,209,102,0.06), transparent 45%),
+      var(--bg);
+  }
+
+  section { padding: 100px 20px; max-width: 760px; margin: 0 auto; }
+  @media (max-width: 600px){ section{ padding: 72px 18px; } }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px;
+    background: rgba(11,14,20,0.75);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .logo { color: var(--rose); font-weight: 700; letter-spacing: 0.02em; }
+  .logo .dim { color: var(--muted); }
+  .navlinks { display: flex; gap: 18px; color: var(--muted); }
+  .navlinks span { cursor: default; }
+  .navlinks span.on { color: var(--func); }
+
+  /* ---------- hero ---------- */
+  .hero { padding-top: 90px; padding-bottom: 60px; text-align: left; }
+  .path {
+    color: var(--muted); font-size: 12px; margin-bottom: 18px;
+  }
+  .path .seg-key { color: var(--func); }
+
+  .window {
+    background: var(--panel);
+    border-radius: 12px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px var(--line);
+    overflow: hidden;
+  }
+  .titlebar {
+    background: var(--chrome);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+  .filename { margin-left: 8px; font-size: 12px; color: var(--muted); }
+  .code {
+    padding: 24px 20px 28px;
+    font-size: 14px; line-height: 1.8;
+    white-space: pre-wrap; word-break: break-word;
+    min-height: 210px;
+  }
+  @media (min-width: 480px){ .code{ font-size: 15px; } }
+  .c-comment { color: var(--comment); }
+  .c-key { color: var(--key); }
+  .c-str { color: var(--str); }
+  .c-func { color: var(--func); }
+  .c-punc { color: var(--muted); }
+  .c-text { color: var(--text); }
+  .cursor {
+    display: inline-block; width: 8px; height: 1.1em;
+    background: var(--rose); vertical-align: text-bottom; margin-left: 1px;
+    animation: blink 1s step-start infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .headline {
+    margin-top: 34px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(34px, 7vw, 56px);
+    line-height: 1.08;
+    color: var(--text);
+  }
+  .headline .accent { color: var(--rose); }
+  .sub { color: var(--muted); margin-top: 14px; font-size: 14px; max-width: 46ch; }
+
+  .scroll-hint {
+    margin-top: 46px; color: var(--muted); font-size: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .scroll-hint .arrow { animation: bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(5px);} }
+
+  /* ---------- section headers ---------- */
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--func); margin-bottom: 10px;
+  }
+  .sec-title {
+    font-family: 'Fraunces', serif; font-weight: 500; font-style: italic;
+    font-size: clamp(24px, 4.5vw, 32px); margin: 0 0 34px; color: var(--text);
+  }
+
+  /* ---------- commit log ---------- */
+  .commit {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 0 16px;
+    position: relative;
+  }
+  .commit .rail {
+    position: relative;
+    display: flex; justify-content: center;
+  }
+  .commit .rail::before {
+    content: '';
+    position: absolute; top: 22px; bottom: -34px; width: 1px;
+    background: var(--line);
+  }
+  .commit:last-child .rail::before { display: none; }
+  .commit .node {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--rose); margin-top: 6px;
+    box-shadow: 0 0 0 4px rgba(255,107,157,0.15);
+  }
+  .commit-body { padding-bottom: 34px; }
+  .commit-hash { color: var(--muted); font-size: 12px; }
+  .commit-hash .type { color: var(--func); }
+  .commit-msg { color: var(--text); font-size: 15px; margin-top: 4px; line-height: 1.55; }
+  .commit-meta { color: var(--muted); font-size: 11px; margin-top: 6px; }
+
+  .commit-body, .stat-card, .letter {
+    opacity: 0; transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .commit-body.in, .stat-card.in { opacity: 1; transform: translateY(0); }
+
+  /* ---------- stats ---------- */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  @media (max-width: 480px){ .stats-grid{ grid-template-columns: 1fr; } }
+  .stat-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 20px;
+  }
+  .stat-num {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+    font-size: 30px; color: var(--rose);
+  }
+  .stat-label { color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+  .heatmap { margin-top: 26px; }
+  .heatmap-title { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(26, 1fr);
+    gap: 3px;
+  }
+  @media (max-width: 480px){ .heatmap-grid{ grid-template-columns: repeat(18, 1fr); } }
+  .cell {
+    aspect-ratio: 1; border-radius: 2px; background: rgba(255,107,157,0.12);
+  }
+
+  /* ---------- letter finale ---------- */
+  .finale { text-align: center; }
+  .letter-wrap { position: relative; }
+  .letter {
+    background: var(--paper); color: var(--ink);
+    border-radius: 14px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.55);
+    padding: 40px 30px 34px;
+    text-align: left;
+  }
+  .letter.in { opacity: 1; transform: translateY(0); }
+  .letter-eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--rose); text-align: center; margin-bottom: 6px;
+  }
+  .letter h2 {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+    text-align: center; font-size: clamp(26px, 6vw, 34px); margin: 0 0 22px; color: var(--ink);
+  }
+  .letter p {
+    font-family: 'Caveat', cursive; font-size: clamp(20px, 4.2vw, 24px);
+    line-height: 1.5; margin: 0 0 12px; color: var(--ink);
+  }
+  .signature { font-family: 'Caveat', cursive; font-size: 26px; text-align: right; margin-top: 16px; color: var(--rose); }
+
+  .replay {
+    margin: 26px auto 0; display: block;
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    padding: 9px 16px; border-radius: 8px; cursor: pointer;
+  }
+  .replay:hover { color: var(--text); border-color: var(--rose); }
+
+  .heart {
+    position: absolute; bottom: -6%;
+    font-size: 16px; opacity: 0; color: var(--rose);
+    animation: float 4.5s ease-in forwards; pointer-events: none;
+  }
+  @keyframes float {
+    0% { opacity: 0; transform: translateY(0) translateX(0) scale(0.6) rotate(0deg); }
+    10% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-380px) translateX(var(--drift, 20px)) scale(1) rotate(20deg); }
+  }
+
+  footer {
+    text-align: center; padding: 50px 20px 70px;
+    color: var(--muted); font-size: 12px;
+  }
+  footer .rose { color: var(--rose); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="glow-bg"></div>
+
+<nav>
+  <div class="logo">tekra<span class="dim">.dev</span></div>
+  <div class="navlinks">
+    <span>README</span><span>·</span><span>log</span><span>·</span><span>stats</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="path"><span class="seg-key">~/us</span> $ cat girlfriends-day.md</div>
+  <div class="window">
+    <div class="titlebar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="filename">boot.js</span>
+    </div>
+    <div class="code" id="code"></div>
+  </div>
+  <h1 class="headline">Happy Girlfriend's Day,<br><span class="accent">Tekra.</span></h1>
+  <p class="sub">This is my README for you — the changelog, the stats, and the one file that isn't code at all. Scroll down.</p>
+  <div class="scroll-hint"><span class="arrow">↓</span> scroll to view log</div>
+</section>
+
+<!-- COMMIT LOG -->
+<section id="log">
+  <div class="eyebrow">git log --author=tekra</div>
+  <h2 class="sec-title">why I love you, one commit at a time</h2>
+
+  <div class="commit">
+    <div class="rail"><div class="node"></div></div>
+    <div class="commit-body">
+      <div class="commit-hash"><span class="type">feat:</span> a4f9c2e</div>
+      <div class="commit-msg">you make ordinary days feel worth showing up for</div>
+      <div class="commit-meta">authored by Tekra</div>
+    </div>
+  </div>
+
+  <div class="commit">
+    <div class="rail"><div class="node"></div></div>
+    <div class="commit-body">
+      <div class="commit-hash"><span class="type">fix:</span> 7b1d0a3</div>
+      <div class="commit-msg">calmed me down when my brain was throwing exceptions</div>
+      <div class="commit-meta">authored by Tekra</div>
+    </div>
+  </div>
+
+  <div class="commit">
+    <div class="rail"><div class="node"></div></div>
+    <div class="commit-body">
+      <div class="commit-hash"><span class="type">refactor:</span> 2e8f61c</div>
+      <div class="commit-msg">turned my rough days into something worth laughing about</div>
+      <div class="commit-meta">authored by Tekra</div>
+    </div>
+  </div>
+
+  <div class="commit">
+    <div class="rail"><div class="node"></div></div>
+    <div class="commit-body">
+      <div class="commit-hash"><span class="type">chore:</span> 9c3a55d</div>
+      <div class="commit-msg">put up with me talking about code way too much</div>
+      <div class="commit-meta">authored by Tekra</div>
+    </div>
+  </div>
+
+  <div class="commit">
+    <div class="rail"><div class="node"></div></div>
+    <div class="commit-body">
+      <div class="commit-hash"><span class="type">feat:</span> 0f4b8e1</div>
+      <div class="commit-msg">became my favorite person to build a life with</div>
+      <div class="commit-meta">authored by Tekra · HEAD</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="eyebrow">npm run stats</div>
+  <h2 class="sec-title">us, by the numbers</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">reasons to love you</div></div>
+    <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">regrets about us</div></div>
+    <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">test coverage on "do I love her"</div></div>
+    <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">best decision I ever made</div></div>
+  </div>
+
+  <div class="heatmap">
+    <div class="heatmap-title">contribution graph — days I thought about you</div>
+    <div class="heatmap-grid" id="heatmap"></div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<section id="finale" class="finale">
+  <div class="eyebrow">the only non-code file in this repo</div>
+  <h2 class="sec-title">open letter.txt</h2>
+
+  <div class="letter-wrap" id="letterWrap">
+    <div class="letter in" id="letter">
+      <div class="letter-eyebrow">to Tekra</div>
+      <h2>Happy Girlfriend's Day</h2>
+      <p>Out of every project I've ever built, you're the one I never want to stop working on — not because you're broken, but because getting to keep showing up for you is the best part of my day.</p>
+      <p>You're the calm in my messiest deploys, the reason my worst days still end okay, and honestly the only "dependency" I never want to remove.</p>
+      <p>So today isn't about code at all. It's just me, saying it plainly: I love you, I'm grateful for you, and I can't wait for everything we still get to build together.</p>
+      <div class="signature">— always yours</div>
+      <button class="replay" id="replayBtn">↺ replay hearts</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  built with <span class="rose">♥</span> and way too much JetBrains Mono, for Tekra
+</footer>
+
+<script>
+// ---- hero typing animation ----
+const codeEl = document.getElementById('code');
+const lines = [
+  [{t:'// booting girlfriend_day.exe', c:'c-comment'}],
+  [{t:'const', c:'c-key'}, {t:' girlfriend ', c:'c-text'}, {t:'=', c:'c-punc'}, {t:' "Tekra"', c:'c-str'}, {t:';', c:'c-punc'}],
+  [{t:'', c:'c-text'}],
+  [{t:'function', c:'c-key'}, {t:' ', c:'c-text'}, {t:'today', c:'c-func'}, {t:'() {', c:'c-punc'}],
+  [{t:'  return', c:'c-key'}, {t:' celebrate', c:'c-func'}, {t:'(', c:'c-punc'}, {t:'girlfriend', c:'c-text'}, {t:');', c:'c-punc'}],
+  [{t:'}', c:'c-punc'}],
+  [{t:'', c:'c-text'}],
+  [{t:'console', c:'c-func'}, {t:'.', c:'c-punc'}, {t:'log', c:'c-func'}, {t:'(', c:'c-punc'}, {t:'today', c:'c-func'}, {t:'());', c:'c-punc'}],
+];
+
+let li = 0;
+function typeLine() {
+  if (li >= lines.length) {
+    const cur = document.createElement('span');
+    cur.className = 'cursor';
+    codeEl.appendChild(cur);
+    return;
+  }
+  const tokens = lines[li];
+  const fullText = tokens.map(t => t.t).join('');
+  const lineDiv = document.createElement('div');
+  codeEl.appendChild(lineDiv);
+  const flat = [];
+  tokens.forEach(tok => { for (const ch of tok.t) flat.push({ch, c: tok.c}); });
+  let ci = 0;
+  function typeChar(){
+    if (ci >= flat.length) {
+      li++;
+      setTimeout(typeLine, fullText.length ? 55 : 25);
+      return;
+    }
+    const {ch, c} = flat[ci];
+    let lastSpan = lineDiv.lastElementChild;
+    if (!lastSpan || lastSpan.dataset.c !== c) {
+      lastSpan = document.createElement('span');
+      lastSpan.className = c; lastSpan.dataset.c = c;
+      lineDiv.appendChild(lastSpan);
+    }
+    lastSpan.textContent += ch;
+    ci++;
+    setTimeout(typeChar, 10 + Math.random()*9);
+  }
+  typeChar();
+}
+typeLine();
+
+// ---- heatmap ----
+const heatmap = document.getElementById('heatmap');
+for (let i=0;i<130;i++){
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  const level = Math.random();
+  const alpha = level > 0.85 ? 1 : level > 0.6 ? 0.7 : level > 0.35 ? 0.4 : 0.15;
+  cell.style.background = `rgba(255,107,157,${alpha})`;
+  heatmap.appendChild(cell);
+}
+
+// ---- scroll reveal ----
+const revealEls = document.querySelectorAll('.commit-body, .stat-card');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.2 });
+revealEls.forEach(el => io.observe(el));
+
+// ---- floating hearts on replay ----
+const letterWrap = document.getElementById('letterWrap');
+const replayBtn = document.getElementById('replayBtn');
+function spawnHearts(){
+  const symbols = ['♥','❤','♡'];
+  for (let i=0;i<16;i++){
+    setTimeout(() => {
+      const h = document.createElement('span');
+      h.className = 'heart';
+      h.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      h.style.left = (5 + Math.random()*90) + '%';
+      h.style.setProperty('--drift', (Math.random()*80 - 40) + 'px');
+      h.style.fontSize = (14 + Math.random()*16) + 'px';
+      letterWrap.appendChild(h);
+      setTimeout(() => h.remove(), 4600);
+    }, i*110);
+  }
+}
+replayBtn.addEventListener('click', spawnHearts);
+setTimeout(spawnHearts, 600);
+</script>
+
+</body>
+</html>
